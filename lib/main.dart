@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
+import 'screens/landing_page.dart';
+import 'screens/admin_login.dart';
+import 'screens/admin_signup.dart';
+import 'screens/admin_dashboard.dart';
+import 'screens/trainer_login.dart';
+import 'screens/trainer_dashboard.dart';
+import 'screens/customer_login.dart';
+import 'screens/customer_dashboard.dart';
 import 'package:provider/provider.dart';
 import 'auth_provider.dart';
-import 'login_page.dart';
-import 'dashboard_page.dart';
-import 'initial_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
-      child: MaterialApp(
-        title: 'Login App',
-        routes: {
-          '/': (context) => InitialScreen(),
-          '/login': (context) => LoginPage(),
-          '/dashboard': (context) => DashboardPage(),
-        },
-      ),
+    return MaterialApp(
+      title: 'Login App',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LandingPage(),
+        '/adminLogin': (context) => AdminLoginPage(),
+        '/adminSignup': (context) => AdminSignupPage(),
+        '/adminDashboard': (context) => AdminDashboardPage(),
+        '/trainerLogin': (context) => TrainerLoginPage(),
+        '/trainerDashboard': (context) => TrainerDashboardPage(),
+        '/customerLogin': (context) => CustomerLoginPage(),
+        '/customerDashboard': (context) => CustomerDashboardPage(),
+      },
     );
   }
 }

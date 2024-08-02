@@ -14,3 +14,31 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+Folder structure
+
+lib/
+├── main.dart
+├── screens/
+│   ├── admin/
+│   │   ├── admin_dashboard.dart
+│   │   ├── admin_profile.dart
+│   │   └── ...
+│   ├── trainer/
+│   │   ├── trainer_dashboard.dart
+│   │   ├── trainer_profile.dart
+│   │   └── ...
+│   ├── customer/
+│   │   ├── customer_dashboard.dart
+│   │   ├── customer_profile.dart
+│   │   └── ...
+│   ├── auth/
+│   │   ├── login.dart
+│   │   ├── register.dart
+│   │   └── ...
+│   └── common/
+│       ├── widgets.dart
+│       └── ...
+├── models/
+├── services/
+└── utils/

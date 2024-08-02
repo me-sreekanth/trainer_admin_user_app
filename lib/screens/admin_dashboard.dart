@@ -1,53 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'auth_provider.dart';
+import '../auth_provider.dart';
 
-class DashboardPage extends StatefulWidget {
+class AdminDashboardPage extends StatefulWidget {
   @override
-  _DashboardPageState createState() => _DashboardPageState();
+  _AdminDashboardPageState createState() => _AdminDashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
-  late Future<List<dynamic>> _usersFuture;
+class _AdminDashboardPageState extends State<AdminDashboardPage> {
+  late Future<List<dynamic>> _adminUsersFuture;
 
   @override
   void initState() {
     super.initState();
-    _usersFuture =
-        Provider.of<AuthProvider>(context, listen: false).fetchUsers(context);
+    _adminUsersFuture = Provider.of<AuthProvider>(context, listen: false)
+        .fetchAdminUsers(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: Text('Admin Dashboard'),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/login');
+              Provider.of<AuthProvider>(context, listen: false).logout();
+              Navigator.of(context).pushReplacementNamed('/adminLogin');
             },
           ),
         ],
       ),
       body: FutureBuilder<List<dynamic>>(
-        future: _usersFuture,
+        future: _adminUsersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No users found'));
+            return Center(child: Text('No admin users found'));
           } else {
-            final users = snapshot.data!;
+            final adminUsers = snapshot.data!;
             return ListView.builder(
-              itemCount: users.length,
+              itemCount: adminUsers.length,
               itemBuilder: (context, index) {
-                final user = users[index];
+                final admin = adminUsers[index];
                 return ListTile(
-                  title: Text('User: ${user['mobileNumber']}'),
+                  title: Text('Admin ID: ${admin['_id']}'),
+                  subtitle: Text('Version: ${admin['__v']}'),
                 );
               },
             );
