@@ -8,15 +8,15 @@ class TrainerDashboardPage extends StatelessWidget {
         title: Text('Trainer Dashboard'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.person),
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/trainerLogin');
+              Navigator.pushNamed(context, '/trainerProfile');
             },
           ),
         ],
       ),
       body: Center(
-        child: Text('Welcome to the Trainer Dashboard!'),
+        child: Text('Welcome to Trainer Dashboard'),
       ),
     );
   }

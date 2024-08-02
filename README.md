@@ -42,3 +42,17 @@ lib/
 ├── models/
 ├── services/
 └── utils/
+
+
+> DONE
+
+1. Admin login + signup
+2. Trainer login
+3. Customer sign up/login with OTP
+
+> TODOs
+
+1. Trainer UI
+    => Trainer Profile details
+    => Trainer dashboard
+    
