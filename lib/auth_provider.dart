@@ -33,7 +33,7 @@ class AuthProvider extends ChangeNotifier {
         // Unauthorized, redirect to login
         if (!_isNavigating) {
           _isNavigating = true;
-          Navigator.of(context).pushReplacementNamed('/adminLogin');
+          Navigator.of(context).pushReplacementNamed('/trainerLogin');
         }
       } else {
         throw Exception('Failed to refresh token: ${request.responseText}');
@@ -96,6 +96,7 @@ class AuthProvider extends ChangeNotifier {
       if (request.status == 200) {
         final data = jsonDecode(request.responseText ?? '');
         _accessToken = data['accessToken'];
+        await _saveToken(_accessToken!);
         notifyListeners(); // Notify listeners of the change
         return true;
       } else {
@@ -104,6 +105,35 @@ class AuthProvider extends ChangeNotifier {
       }
     } catch (e) {
       print('Error logging in admin: $e');
+      return false;
+    }
+  }
+
+  Future<bool> loginTrainer(String username, String password) async {
+    try {
+      final request = HttpRequest();
+      request.open('POST', '$apiUrl/api/trainer/login');
+      request.setRequestHeader('Content-Type', 'application/json');
+      request.withCredentials = true; // Include credentials if cookies are used
+      request.send(jsonEncode({
+        'username': username,
+        'password': password,
+      }));
+
+      await request.onLoadEnd.first;
+
+      if (request.status == 200) {
+        final data = jsonDecode(request.responseText ?? '');
+        _accessToken = data['accessToken'];
+        await _saveToken(_accessToken!);
+        notifyListeners(); // Notify listeners of the change
+        return true;
+      } else {
+        print('Failed to login trainer: ${request.responseText}');
+        return false;
+      }
+    } catch (e) {
+      print('Error logging in trainer: $e');
       return false;
     }
   }
@@ -156,5 +186,60 @@ class AuthProvider extends ChangeNotifier {
     final payload =
         utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
     return jsonDecode(payload);
+  }
+
+  Future<bool> sendOtp(String mobileNumber) async {
+    try {
+      final request = HttpRequest();
+      request.open('POST', '$apiUrl/api/otp/send');
+      request.setRequestHeader('Content-Type', 'application/json');
+      request.send(jsonEncode({
+        'countryCode': '91', // Ensure the country code is a string
+        'mobileNumber': mobileNumber,
+      }));
+
+      await request.onLoadEnd.first;
+
+      if (request.status == 200) {
+        print('OTP sent successfully');
+        return true;
+      } else {
+        print('Failed to send OTP: ${request.responseText}');
+        return false;
+      }
+    } catch (e) {
+      print('Error sending OTP: $e');
+      return false;
+    }
+  }
+
+  Future<bool> validateOtp(String mobileNumber, String otpCode) async {
+    try {
+      final request = HttpRequest();
+      request.open('POST', '$apiUrl/api/otp/validate');
+      request.withCredentials = true; // Include credentials if cookies are used
+      request.setRequestHeader('Content-Type', 'application/json');
+      request.send(jsonEncode({
+        'countryCode': '91', // Ensure the country code is a string
+        'mobileNumber': mobileNumber,
+        'otpCode': otpCode,
+      }));
+
+      await request.onLoadEnd.first;
+
+      if (request.status == 200) {
+        final data = jsonDecode(request.responseText ?? '');
+        _accessToken = data['accessToken'];
+        await _saveToken(_accessToken!);
+        notifyListeners();
+        return true;
+      } else {
+        print('Failed to validate OTP: ${request.responseText}');
+        return false;
+      }
+    } catch (e) {
+      print('Error validating OTP: $e');
+      return false;
+    }
   }
 }
